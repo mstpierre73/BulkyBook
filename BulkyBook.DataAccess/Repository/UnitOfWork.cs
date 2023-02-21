@@ -1,5 +1,4 @@
 ﻿using BulkyBook.DataAccess.Repository.IRepository;
-using BulkyBook.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +7,20 @@ using System.Threading.Tasks;
 
 namespace BulkyBook.DataAccess.Repository
 {
-    public class CategoryRepository : Repository<Category>, ICategoryRepository
+    public class UnitOfWork : IUnitOfWork
     {
         private ApplicationDbContext _db;
 
-        public CategoryRepository(ApplicationDbContext db) : base(db) 
-        { 
-            _db = db; 
-        }
-        public void Update(Category obj)
+        public UnitOfWork(ApplicationDbContext db)
         {
-            _db.Update(obj);
+            _db = db;
+            Category = new CategoryRepository(_db);
+        }
+        public ICategoryRepository Category { get; private set;}
+
+        public void Save()
+        {
+            _db.SaveChanges();
         }
     }
 }
