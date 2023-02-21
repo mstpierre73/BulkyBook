@@ -3,33 +3,42 @@ using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BulkyBookWeb.Controllers {
-    public class CategoryController : Controller {
+namespace BulkyBookWeb.Areas.Admin.Controllers
+{
+    [Area("Admin")]
+    public class CategoryController : Controller
+    {
 
         private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(IUnitOfWork unitOfWork) {
+        public CategoryController(IUnitOfWork unitOfWork)
+        {
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index() {
+        public IActionResult Index()
+        {
             IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
             return View(objCategoryList);
         }
 
         //GET
-        public IActionResult Create() {
+        public IActionResult Create()
+        {
             return View();
         }
 
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Category obj) {
-            if(obj.Name == obj.DisplayOrder.ToString()) {
+        public IActionResult Create(Category obj)
+        {
+            if (obj.Name == obj.DisplayOrder.ToString())
+            {
                 ModelState.AddModelError("NameEqualToDisplayOrder", "The Display Order cannot exactly match the Name.");
             }
-            if(ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
                 _unitOfWork.Category.Add(obj);
                 _unitOfWork.Save();
                 TempData["success"] = "Category created sucessfully";
@@ -40,14 +49,17 @@ namespace BulkyBookWeb.Controllers {
         }
 
         //GET
-        public IActionResult Edit(int? id) {
-            if(id == null || id == 0) {
+        public IActionResult Edit(int? id)
+        {
+            if (id == null || id == 0)
+            {
                 return NotFound();
             }
-            
-            var categoryFromDbFirst = _unitOfWork.Category.GetFirstOrDefault(u=>u.Id==id);
 
-            if(categoryFromDbFirst == null) {
+            var categoryFromDbFirst = _unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
+
+            if (categoryFromDbFirst == null)
+            {
                 return NotFound();
             }
 
@@ -57,11 +69,14 @@ namespace BulkyBookWeb.Controllers {
         //PUT
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Category obj) {
-            if (obj.Name == obj.DisplayOrder.ToString()) {
+        public IActionResult Edit(Category obj)
+        {
+            if (obj.Name == obj.DisplayOrder.ToString())
+            {
                 ModelState.AddModelError("NameEqualToDisplayOrder", "The Display Order cannot exactly match the Name.");
             }
-            if (ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
                 _unitOfWork.Category.Update(obj);
                 _unitOfWork.Save();
                 TempData["success"] = "Category updated sucessfully";
@@ -72,14 +87,17 @@ namespace BulkyBookWeb.Controllers {
         }
 
         //GET
-        public IActionResult Delete(int? id) {
-            if (id == null || id == 0) {
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
                 return NotFound();
             }
 
-            var categoryFromDbFirst = _unitOfWork.Category.GetFirstOrDefault(u=>u.Id==id);
+            var categoryFromDbFirst = _unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
 
-            if (categoryFromDbFirst == null) {
+            if (categoryFromDbFirst == null)
+            {
                 return NotFound();
             }
 
@@ -89,9 +107,11 @@ namespace BulkyBookWeb.Controllers {
         //DELETE
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeletePOST (int? id) {
+        public IActionResult DeletePOST(int? id)
+        {
             var categoryFromDbFirst = _unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
-            if (categoryFromDbFirst == null) {
+            if (categoryFromDbFirst == null)
+            {
                 return NotFound();
             }
 
