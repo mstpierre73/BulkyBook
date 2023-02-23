@@ -1,4 +1,5 @@
 ﻿using BulkyBook.DataAccess;
+using BulkyBook.DataAccess.Repository;
 using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models;
 using BulkyBook.Models.ViewModels;
@@ -22,11 +23,10 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> objProductList = _unitOfWork.Product.GetAll();
-            return View(objProductList);
+            return View();
         }
 
-       //GET
+        //GET
         public IActionResult Upsert(int? id)
         {
             ProductViewModel productViewModel = new()
@@ -48,7 +48,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             {
                 //Create product
                 return View(productViewModel);
-            } 
+            }
             else
             {
                 //update product
@@ -66,7 +66,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
-                if(file != null)
+                if (file != null)
                 {
                     string fileName = Guid.NewGuid().ToString();
                     var uploads = Path.Combine(wwwRootPath, @"images\products");
@@ -122,5 +122,14 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             TempData["success"] = "Product deleted sucessfully";
             return RedirectToAction("Index");
         }
+
+        #region API CALLS
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var productList = _unitOfWork.Product.GetAll();
+            return Json(new { data = productList });
+        }
+        #endregion
     }
 }
