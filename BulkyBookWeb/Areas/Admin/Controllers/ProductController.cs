@@ -52,6 +52,8 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             else
             {
                 //update product
+                productViewModel.Product = _unitOfWork.Product.GetFirstOrDefault(i => i.Id == id);
+                return View(productViewModel);
 
             }
 
